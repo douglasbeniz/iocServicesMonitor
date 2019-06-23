@@ -31,23 +31,7 @@ def index():
         #return str(current_app.config['SERVERS'])
         servers = []
         for server in current_app.config['SERVERS']:
-            #server_status = get_server_action(server, 'status')
-            server_status = {'status':'active'}
-            if server_status['status'] == 'not-found':
-                cls = 'active'
-            elif server_status['status'] == 'inactive' or server_status['status'] == 'failed':
-                cls = 'danger'
-            elif server_status['status'] == 'active':
-                cls = 'success'
-            else:
-                cls = 'warning'
-            disabled_start = True if cls == 'active' or cls == 'success' else False
-            disabled_stop = True if cls == 'active' or cls == 'danger' else False
-            disabled_restart = True if cls == 'active' or cls == 'danger' else False
-            servers.append({'class': cls,
-                'disabled_start': disabled_start,
-                'disabled_stop': disabled_stop,
-                'disabled_restart': disabled_restart,
+            servers.append({'class': 'success',
                 'title': server,
                 'server': server,
                 'server_ip':current_app.config['SERVERS'].get(server)})

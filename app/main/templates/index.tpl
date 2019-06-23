@@ -39,14 +39,10 @@
           {% for server in servers %}
           <tr>
             <td class="{{server['class']}}">
-            {% if server['class'] != 'active' %}
-              <a href="/api/iocs/{{server['server_ip']}}"
-                data-toggle="tooltip" data-placement="right" title="Open services for this server">
-            {% endif %}
+              <a href="/api/iocs/{{server['server']}}"
+                data-toggle="tooltip" data-placement="right" title="Open services for this server ({{server['server_ip']}})">
                 {{server['title']}}
-            {% if server['class'] != 'active' %}
-                </a>
-            {% endif %}
+              </a>
             </td>
           </tr>
           {% endfor %}
