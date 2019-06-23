@@ -32,21 +32,51 @@
         <h1>{{hostname or 'iocservicesmonitor'}}</h1>
       </div>
       <div>
-        <table class="table table-hover" id="servers">
+        <table class="table table-hover" id="services">
           <tr>
-            <th>Server</th>
+            <th>Service</th>
+            <th class="text-right">Actions</th>
           </tr>
-          {% for server in servers %}
+          {% for service in services %}
           <tr>
-            <td class="{{server['class']}}">
-            {% if server['class'] != 'active' %}
-              <a href="/api/iocs/{{server['server_ip']}}"
-                data-toggle="tooltip" data-placement="right" title="Open services for this server">
+            <td class="{{service['class']}}">
+            {% if service['class'] != 'active' %}
+              <a href="/journal/{{service['service']}}"
+                data-toggle="tooltip" data-placement="right" title="Show journal">
             {% endif %}
-                {{server['title']}}
-            {% if server['class'] != 'active' %}
+                {{service['title']}}
+            {% if service['class'] != 'active' %}
                 </a>
             {% endif %}
+            </td>
+            <td class="text-right {{service['class']}}">
+              <button type="button" class="btn btn-default btn-sm"
+              {% if service['disabled_start'] %}
+                disabled="disabled"
+              {% endif %}
+                data-toggle="tooltip" data-placement="top" title="Start"
+                onclick="unit('{{service['service']}}', 'start')">
+                <span class="glyphicon glyphicon-play" aria-hidden="true"
+                aria-label="Start"></span>
+              </button>
+              <button type="button" class="btn btn-default btn-sm"
+              {% if service['disabled_stop'] %}
+                disabled="disabled"
+              {% endif %}
+                data-toggle="tooltip" data-placement="top" title="Stop"
+                onclick="unit('{{service['service']}}', 'stop')">
+                <span class="glyphicon glyphicon-stop" aria-hidden="true"
+                aria-label="Stop"></span>
+              </button>
+              <button type="button" class="btn btn-default btn-sm"
+              {% if service['disabled_restart'] %}
+                disabled="disabled"
+              {% endif %}
+                data-toggle="tooltip" data-placement="top" title="Restart"
+                onclick="unit('{{service['service']}}', 'restart')">
+                <span class="glyphicon glyphicon-retweet" aria-hidden="true"
+                aria-label="Restart"></span>
+              </button>
             </td>
           </tr>
           {% endfor %}
