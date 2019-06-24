@@ -9,15 +9,15 @@
 
     <!-- Bootstrap -->
     <!-- <link href="/static/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="{{url_for('main.static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('api.static', filename='css/bootstrap.min.css')}}">
 
     <!-- Custom style -->
     <!-- <link href="/static/css/iocservicesmonitor.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="{{url_for('main.static', filename='css/iocservicesmonitor.css')}}">
+    <link rel="stylesheet" href="{{url_for('api.static', filename='css/iocservicesmonitor.css')}}">
 
     <!-- Favicon -->
     <!-- <link rel="shortcut icon" href="/static/img/favicon.png"> -->
-    <link rel="shortcut icon" href="{{url_for('main.static', filename='img/favicon.png')}}">
+    <link rel="shortcut icon" href="{{url_for('api.static', filename='img/favicon.png')}}">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -111,8 +111,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!-- <script src="/static/js/bootstrap.min.js"></script> -->
-    <script src="{{url_for('main.static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('api.static', filename='js/bootstrap.min.js')}}"></script>
     <!-- <script src="/static/js/iocservicesmonitor.js"></script> -->
-    <script src="{{url_for('main.static', filename='js/iocservicesmonitor.js')}}"></script>
+    <script src="{{url_for('api.static', filename='js/iocservicesmonitor.js')}}"></script>
   </body>
 </html>
