@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 # vim:fenc=utf-8
 #
-# Copyright © 2016-2018 Óscar García Amor <ogarcia@connectical.com>
-#
 # Distributed under terms of the GNU GPLv3 license.
 
 from dbus import SystemBus, SessionBus, Interface, exceptions
@@ -16,7 +14,8 @@ import subprocess
 # -----------------------------------------------------------------------------
 CONSERVER_CONF              = '/etc/conserver/procs.cf'
 DBUS_INTERFACE              = 'org.freedesktop.DBus.Properties'
-IOC_SERVICES_PREFIX         = 'ioc@*'
+IOC_SERVICES_PREFIX         = 'ioc@'
+IOC_SERVICES_PREFIX_WCHAR   = IOC_SERVICES_PREFIX + '*'
 SYSTEMCTL                   = '/bin/systemctl'
 SYSTEMD_BUSNAME             = 'org.freedesktop.systemd1'
 SYSTEMD_DIR                 = '/etc/systemd/system'
@@ -79,14 +78,17 @@ class systemdBus(object):
             return False
 
     def ioc_services_list(self):
-        ioc_services_list = []
-        response, err =subprocess.check_call([systemctl, '--user' if self.user else '--system', 'list-units', IOC_SERVICES_PREFIX])
+        ioc_services_list   = []
+        systemctl_execution = subprocess.Popen([SYSTEMCTL, '--system', '--all', 'list-units', IOC_SERVICES_PREFIX_WCHAR], stdout=subprocess.PIPE)
+        response, err       = systemctl_execution.communicate()
+
         if response:
             parsed_response = str(response).split('\\n')
 
             for line in parsed_response:
                 if IOC_SERVICES_PREFIX in line:
                     ioc_services_list.append(line.split())
+
         return ioc_services_list
 
 class Journal(object):

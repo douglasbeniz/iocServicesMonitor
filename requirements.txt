@@ -5,6 +5,9 @@ Jinja2==2.10.1
 MarkupSafe==1.1.1
 pkg-resources==0.0.0
 Werkzeug==0.15.4
-bottle=0.12.16
-#pam=0.1.4
-simplepam=0.1.5
+#pam==0.1.4
+simplepam==0.1.5
+bottle >= 0.12.10
+dbus-python
+python-pam
+systemd-python

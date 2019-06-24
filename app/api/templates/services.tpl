@@ -41,7 +41,7 @@
           <tr>
             <td class="{{service['class']}}">
             {% if service['class'] != 'active' %}
-              <a href="/journal/{{service['service']}}"
+              <a href="/api/v1/iocs/journal/{{service['service']}}"
                 data-toggle="tooltip" data-placement="right" title="Show journal">
             {% endif %}
                 {{service['title']}}
