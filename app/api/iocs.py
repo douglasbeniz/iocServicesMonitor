@@ -39,10 +39,11 @@ def get_iocs_list():
             'service': service[0]})
     return render_template('services.tpl', hostname=gethostname(), services=services)
 
+
 # -----------------------------------------------------------------------------
 # Service and Action to perform over it
 # -----------------------------------------------------------------------------
-@route('/iocs/<service>/<action>')
+@bp_api.route('/iocs/<service>/<action>', methods=['GET'])
 #@auth_basic(login)
 def get_service_action(service, action):
     sdbus = systemdBus()
@@ -74,7 +75,10 @@ def get_service_action(service, action):
         return {'msg': 'Sorry, but \'{}\' is not defined in config.'.format(service)}
 
 
-@route('/iocs/<service>/journal/<lines>')
+# -----------------------------------------------------------------------------
+# Get journal of a service with a limit of lines
+# -----------------------------------------------------------------------------
+@bp_api.route('/iocs/<service>/journal/<lines>', methods=['GET'])
 #@auth_basic(login)
 def get_service_journal(service, lines):
     sdbus = systemdBus()
@@ -96,7 +100,10 @@ def get_service_journal(service, lines):
         return {'msg': 'Sorry, but \'{}\' is not defined in config.'.format(service)}
 
 
-@route('/iocs/journal/<service>')
+# -----------------------------------------------------------------------------
+# Get default 100 lines journal of a service
+# -----------------------------------------------------------------------------
+@bp_api.route('/iocs/journal/<service>', methods=['GET'])
 #@auth_basic(login)
 def get_service_journal_page(service):
     sdbus = systemdBus()
