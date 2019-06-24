@@ -8,13 +8,16 @@
     <title>{{service}} journal · {{hostname or 'iocservicesmonitor'}} · iocservicesmonitor</title>
 
     <!-- Bootstrap -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="/static/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{url_for('main.static', filename='css/bootstrap.min.css')}}">
 
     <!-- Custom style -->
-    <link href="/css/iocservicesmonitor.css" rel="stylesheet">
+    <!-- <link href="/static/css/iocservicesmonitor.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{url_for('main.static', filename='css/iocservicesmonitor.css')}}">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="/img/favicon.png">
+    <!-- <link rel="shortcut icon" href="/static/img/favicon.png"> -->
+    <link rel="shortcut icon" href="{{url_for('main.static', filename='img/favicon.png')}}">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
