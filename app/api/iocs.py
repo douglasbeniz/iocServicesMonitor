@@ -1,4 +1,4 @@
-from flask import current_app, render_template
+from flask import current_app, render_template, abort
 from socket import gethostname
 from app.api import bp_api
 from app.api.systemd import systemdBus, Journal, IOC_SERVICES_PREFIX
@@ -49,7 +49,7 @@ def get_service_action(service, action):
     sdbus = systemdBus()
     ioc_services_list = sdbus.ioc_services_list()
 
-    if service in ioc_services_list:
+    if service in str(ioc_services_list):
         if action == 'start':
             return {action: 'OK'} if sdbus.start_unit(service) else {action: 'Fail'}
         elif action == 'stop':
@@ -72,7 +72,7 @@ def get_service_action(service, action):
             return {'msg': 'Sorry, but cannot perform \'{}\' action.'.format(action)}
     else:
         response.status = 400
-        return {'msg': 'Sorry, but \'{}\' is not defined in config.'.format(service)}
+        return {'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)}
 
 
 # -----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ def get_service_journal(service, lines):
     sdbus = systemdBus()
     ioc_services_list = sdbus.ioc_services_list()
 
-    if service in ioc_services_list:
+    if service in str(ioc_services_list):
         if get_service_action(service, 'status')['status'] == 'not-found':
             return {'journal': 'not-found'}
         try:
@@ -96,7 +96,7 @@ def get_service_journal(service, lines):
         return {'journal': journal.get_tail(lines)}
     else:
         response.status = 400
-        return {'msg': 'Sorry, but \'{}\' is not defined in config.'.format(service)}
+        return {'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)}
 
 
 # -----------------------------------------------------------------------------
@@ -108,10 +108,10 @@ def get_service_journal_page(service):
     sdbus = systemdBus()
     ioc_services_list = sdbus.ioc_services_list()
 
-    if service in ioc_services_list:
+    if service in str(ioc_services_list):
         if get_service_action(service, 'status')['status'] == 'not-found':
             abort(400,'Sorry, but service \'{}\' unit not found in system.'.format(service))
         journal_lines = get_service_journal(service, 100)
         return render_template('journal.tpl', hostname=gethostname(), service=service, journal=journal_lines['journal'])
     else:
-        abort(400, 'Sorry, but \'{}\' is not defined in config.'.format(service))
+        abort(400, 'Sorry, but \'{}\' is not valid anymore.'.format(service))

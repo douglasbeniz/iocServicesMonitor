@@ -31,9 +31,9 @@
       </div>
       <div>
 <pre id="journal">
-% for line in journal:
+{% for line in journal %}
 {{line}}
-% end
+{% endfor %}
 </pre>
       </div>
     </div>
