@@ -39,7 +39,7 @@
           {% for server in servers %}
           <tr>
             <td class="{{server['class']}}">
-              <a href="/api/iocs/{{server['server']}}"
+              <a href="/api/v1/iocs/{{server['server']}}"
                 data-toggle="tooltip" data-placement="right" title="Open services for this server ({{server['server_ip']}})">
                 {{server['title']}}
               </a>
