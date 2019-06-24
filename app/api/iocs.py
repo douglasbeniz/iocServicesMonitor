@@ -1,7 +1,7 @@
 from flask import current_app, render_template
 from socket import gethostname
 from app.api import bp_api
-from app.api.systemd import systemdBus, Journal
+from app.api.systemd import systemdBus, Journal, IOC_SERVICES_PREFIX
 
 
 # -----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ def get_iocs_list():
             'disabled_start': disabled_start,
             'disabled_stop': disabled_stop,
             'disabled_restart': disabled_restart,
-            'title': gethostname(),
+            'title': service[0].replace(IOC_SERVICES_PREFIX, ''),
             'service': service[0]})
     return render_template('services.tpl', hostname=gethostname(), services=services)
 
