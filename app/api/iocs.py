@@ -92,8 +92,7 @@ def get_service_journal(service, lines):
         except Exception as e:
             response.status = 500
             return {'msg': '{}'.format(e)}
-        unit = config.get(service, 'unit')
-        journal = Journal(unit)
+        journal = Journal(service)
         return {'journal': journal.get_tail(lines)}
     else:
         response.status = 400
@@ -111,7 +110,7 @@ def get_service_journal_page(service):
 
     if service in ioc_services_list:
         if get_service_action(service, 'status')['status'] == 'not-found':
-            abort(400,'Sorry, but service \'{}\' unit not found in system.'.format(config.get(service, 'title')))
+            abort(400,'Sorry, but service \'{}\' unit not found in system.'.format(service))
         journal_lines = get_service_journal(service, 100)
         return render_template('journal.tpl', hostname=gethostname(), service=service, journal=journal_lines['journal'])
     else:
