@@ -83,7 +83,6 @@ def get_service_action(service, action):
             return response
         elif action == 'stop':
             response = jsonify({action: 'OK', 'status_code':201}) if sdbus.stop_unit(service) else {action: 'Fail', 'status_code':401}
-            response.
             return response
         elif action == 'restart':
             response = jsonify({action: 'OK', 'status_code':201}) if sdbus.restart_unit(service) else {action: 'Fail', 'status_code':401}
