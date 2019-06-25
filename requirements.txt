@@ -1,11 +1,12 @@
-flask==1.0.3
-flask-httpauth==3.3.0
+Click==7.0
+Flask==1.0.3
+Flask-HTTPAuth==3.3.0
+Werkzeug==0.15.4
+gunicorn==19.9.0
 itsdangerous==1.1.0
 Jinja2==2.10.1
 MarkupSafe==1.1.1
-Werkzeug==0.15.4
 simplepam==0.1.5
 # sudo apt-get install libdbus*dev
 dbus-python==1.2.8
 systemd-python==234
-python-pam==1.8.4
