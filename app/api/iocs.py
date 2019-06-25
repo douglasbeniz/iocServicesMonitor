@@ -1,13 +1,19 @@
 from flask import current_app, render_template, abort
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from socket import gethostname
 from app.api import bp_api
 from app.api.systemd import systemdBus, Journal, IOC_SERVICES_PREFIX
+#from pam import pam
+from simplepam import authenticate as spam_auth
 
+# Authentication
+basic_auth = HTTPBasicAuth()
 
 # -----------------------------------------------------------------------------
 # Show all services on this server and their status
 # -----------------------------------------------------------------------------
 @bp_api.route('/iocs', methods=['GET'])
+@basic_auth(login)
 def get_iocs_list():
     sdbus = systemdBus()
     ioc_services_list = sdbus.ioc_services_list()
@@ -45,6 +51,7 @@ def get_iocs_list():
 # -----------------------------------------------------------------------------
 @bp_api.route('/iocs/<service>/<action>', methods=['GET'])
 #@auth_basic(login)
+@basic_auth(login)
 def get_service_action(service, action):
     sdbus = systemdBus()
     ioc_services_list = sdbus.ioc_services_list()
@@ -80,6 +87,7 @@ def get_service_action(service, action):
 # -----------------------------------------------------------------------------
 @bp_api.route('/iocs/<service>/journal/<lines>', methods=['GET'])
 #@auth_basic(login)
+@basic_auth(login)
 def get_service_journal(service, lines):
     sdbus = systemdBus()
     ioc_services_list = sdbus.ioc_services_list()
@@ -104,6 +112,7 @@ def get_service_journal(service, lines):
 # -----------------------------------------------------------------------------
 @bp_api.route('/iocs/journal/<service>', methods=['GET'])
 #@auth_basic(login)
+@basic_auth(login)
 def get_service_journal_page(service):
     sdbus = systemdBus()
     ioc_services_list = sdbus.ioc_services_list()
@@ -115,3 +124,16 @@ def get_service_journal_page(service):
         return render_template('journal.tpl', hostname=gethostname(), service=service, journal=journal_lines['journal'])
     else:
         abort(400, 'Sorry, but \'{}\' is not valid anymore.'.format(service))
+
+
+# -----------------------------------------------------------------------------
+# Define auth function
+# -----------------------------------------------------------------------------
+def login(user, password):
+    #users = config.get('DEFAULT', 'users', fallback=None)
+    #if users and not user in users.split(','):
+    #    # User not is in the valid user list
+    #    return False
+    # Validate user with password
+    #return pam().authenticate(user, password)
+    return spam_auth(user, password)

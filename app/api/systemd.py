@@ -27,8 +27,8 @@ class systemdBus(object):
     def __init__(self, user=False):
         self.user = user
         self.bus = SessionBus() if user else SystemBus()
-        systemd = self.bus.get_object(SYSTEMD_BUSNAME, SYSTEMD_PATH)
-        self.manager = Interface(systemd, dbus_interface=SYSTEMD_MANAGER_INTERFACE)
+        self.systemd = self.bus.get_object(SYSTEMD_BUSNAME, SYSTEMD_PATH)
+        self.manager = Interface(self.systemd, dbus_interface=SYSTEMD_MANAGER_INTERFACE)
 
     def get_unit_active_state(self, unit):
         unit = self.manager.LoadUnit(unit)

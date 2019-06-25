@@ -1,13 +1,10 @@
 /*
  * iocservicesmonitor.js
- * Copyright (C) 2016-2018 Óscar García Amor <ogarcia@connectical.com>
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
-
 function unit(service, action) {
   var url = '/api/v1/' + service + '/' + action;
-
   $.getJSON( url, function( data ) {
     $.each( data, function( key, val ) {
       if (val == 'OK') {
