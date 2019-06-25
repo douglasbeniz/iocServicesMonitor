@@ -8,7 +8,7 @@ function unit(service, action) {
   var url = '/api/v1/iocs/' + service + '/' + action;
   $.getJSON( url, function( data ) {
     $.each( data, function( key, val ) {
-      if (val == 'OK') {
+      if (val == 'OK' || val == 200) {
         $('#services').load(document.URL + ' #services');
         var timerId = setInterval(function(){
           $('#services').load(document.URL + ' #services');
