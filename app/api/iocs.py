@@ -60,18 +60,21 @@ def get_iocs_list():
         disabled_start = True if cls == 'active' or cls == 'success' else False
         disabled_stop = True if cls == 'active' or cls == 'danger' else False
         disabled_restart = True if cls == 'active' or cls == 'danger' else False
+        # title of the service presented in the page
         service_title = 'generic-service'
         if IOC_SERVICES_PREFIX in service[0]:
             service_title = service[0].replace(IOC_SERVICES_PREFIX, '')
         elif CONSERVER_PREFIX in service[0]:
             service_title = service[0].replace(CONSERVER_PREFIX, '')
+        # internal name of the service (UNIT) used when acting over it
+        service_name = service[0]
 
         services.append({'class': cls,
             'disabled_start': disabled_start,
             'disabled_stop': disabled_stop,
             'disabled_restart': disabled_restart,
             'title': service_title,
-            'service': service[0]})
+            'service': service_name})
     return render_template('services.tpl', hostname=gethostname(), services=services)
 
 
