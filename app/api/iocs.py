@@ -61,7 +61,7 @@ def get_iocs_list():
         disabled_stop = True if cls == 'active' or cls == 'danger' else False
         disabled_restart = True if cls == 'active' or cls == 'danger' else False
         service_title = 'generic-service'
-        if IOC_SERVICES_PREFIX in service[0];
+        if IOC_SERVICES_PREFIX in service[0]:
             service_title = service[0].replace(IOC_SERVICES_PREFIX, '')
         elif CONSERVER_PREFIX in service[0]:
             service_title = service[0].replace(CONSERVER_PREFIX, '')
