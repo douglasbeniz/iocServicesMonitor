@@ -1,4 +1,4 @@
-from flask import current_app, render_template, abort
+from flask import current_app, render_template, abort, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from socket import gethostname
 from app.api import bp_api
@@ -28,7 +28,7 @@ def login(user, password):
 # -----------------------------------------------------------------------------
 @basic_auth.verify_password
 def verify_password(username, password):
-    return spam_auth(user, password)
+    return spam_auth(username, password)
 
 # -----------------------------------------------------------------------------
 # Show all services on this server and their status
@@ -79,28 +79,44 @@ def get_service_action(service, action):
 
     if service in str(ioc_services_list):
         if action == 'start':
-            return {action: 'OK'} if sdbus.start_unit(service) else {action: 'Fail'}
+            response = jsonify({action: 'OK'}) if sdbus.start_unit(service) else {action: 'Fail'}
+            response.status_code = 201
+            return response
         elif action == 'stop':
-            return {action: 'OK'} if sdbus.stop_unit(service) else {action: 'Fail'}
+            response = jsonify({action: 'OK'}) if sdbus.stop_unit(service) else {action: 'Fail'}
+            response.status_code = 201
+            return response
         elif action == 'restart':
-            return {action: 'OK'} if sdbus.restart_unit(service) else {action: 'Fail'}
+            response = jsonify({action: 'OK'}) if sdbus.restart_unit(service) else {action: 'Fail'}
+            response.status_code = 201
+            return response
         elif action == 'reload':
-            return {action: 'OK'} if sdbus.reload_unit(service) else {action: 'Fail'}
+            response = jsonify({action: 'OK'}) if sdbus.reload_unit(service) else {action: 'Fail'}
+            response.status_code = 201
+            return response
         elif action == 'reloadorrestart':
-            return {action: 'OK'} if sdbus.reload_or_restart_unit(service) else {action: 'Fail'}
+            response = jsonify({action: 'OK'}) if sdbus.reload_or_restart_unit(service) else {action: 'Fail'}
+            response.status_code = 201
+            return response
         elif action == 'status':
             if sdbus.get_unit_load_state(service) != 'not-found':
-                return {action: str(sdbus.get_unit_active_state(service))}
+                response = jsonify({action: str(sdbus.get_unit_active_state(service))})
+                response.status_code = 201
+                return response
             else:
-                return {action: 'not-found'}
+                response = jsonify({action: 'not-found'})
+                response.status_code = 401
+                return response
         elif action == 'journal':
             return get_service_journal(service, 100)
         else:
-            response.status = 400
-            return {'msg': 'Sorry, but cannot perform \'{}\' action.'.format(action)}
+            response = jsonify({'msg': 'Sorry, but cannot perform \'{}\' action.'.format(action)})
+            response.status_code = 400
+            return response
     else:
-        response.status = 400
-        return {'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)}
+        response = jsonify({'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)})
+        response.status_code = 400
+        return response
 
 
 # -----------------------------------------------------------------------------
@@ -115,17 +131,23 @@ def get_service_journal(service, lines):
 
     if service in str(ioc_services_list):
         if get_service_action(service, 'status')['status'] == 'not-found':
-            return {'journal': 'not-found'}
+            response = jsonify({'journal': 'not-found'})
+            response.status_code = 401
+            return response
         try:
             lines = int(lines)
         except Exception as e:
-            response.status = 500
-            return {'msg': '{}'.format(e)}
+            response = jsonify({'msg': '{}'.format(e)})
+            response.status_code = 500
+            return response
         journal = Journal(service)
-        return {'journal': journal.get_tail(lines)}
+        response = jsonify({'journal': journal.get_tail(lines)})
+        response.status_code = 201
+        return response
     else:
-        response.status = 400
-        return {'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)}
+        response = jsonify({'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)})
+        response.status_code = 400
+        return response
 
 
 # -----------------------------------------------------------------------------

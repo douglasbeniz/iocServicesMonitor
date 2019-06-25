@@ -9,6 +9,7 @@ Werkzeug==0.15.4
 #pam==0.1.4
 simplepam==0.1.5
 bottle >= 0.12.10
-dbus-python
-python-pam
-systemd-python
+# sudo apt-get install libdbus*dev
+dbus-python==1.2.8
+systemd-python==234
+python-pam==1.8.4

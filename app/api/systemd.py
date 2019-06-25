@@ -26,7 +26,8 @@ SYSTEMD_UNIT_INTERFACE      = 'org.freedesktop.systemd1.Unit'
 class systemdBus(object):
     def __init__(self, user=False):
         self.user = user
-        self.bus = SessionBus() if user else SystemBus()
+        #self.bus = SessionBus() if user else SystemBus()
+        self.bus = SystemBus()
         self.systemd = self.bus.get_object(SYSTEMD_BUSNAME, SYSTEMD_PATH)
         self.manager = Interface(self.systemd, dbus_interface=SYSTEMD_MANAGER_INTERFACE)
 
