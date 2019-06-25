@@ -81,19 +81,21 @@ def get_service_action(service, action):
 
     if service in str(ioc_services_list):
         if action == 'start':
-            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.start_unit(service) else {action: 'Fail', 'status_code':401}
+            print('start')
+            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.start_unit(service) else jsonify({action: 'Fail', 'status_code':401})
+            print(response)
             return response
         elif action == 'stop':
-            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.stop_unit(service) else {action: 'Fail', 'status_code':401}
+            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.stop_unit(service) else jsonify({action: 'Fail', 'status_code':401})
             return response
         elif action == 'restart':
-            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.restart_unit(service) else {action: 'Fail', 'status_code':401}
+            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.restart_unit(service) else jsonify({action: 'Fail', 'status_code':401})
             return response
         elif action == 'reload':
-            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.reload_unit(service) else {action: 'Fail', 'status_code':401}
+            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.reload_unit(service) else jsonify({action: 'Fail', 'status_code':401})
             return response
         elif action == 'reloadorrestart':
-            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.reload_or_restart_unit(service) else {action: 'Fail', 'status_code':401}
+            response = jsonify({action: 'OK', 'status_code':201}) if sdbus.reload_or_restart_unit(service) else jsonify({action: 'Fail', 'status_code':401})
             return response
         elif action == 'status':
             if sdbus.get_unit_load_state(service) != 'not-found':
