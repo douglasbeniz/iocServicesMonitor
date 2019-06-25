@@ -1,28 +1,12 @@
 from flask import current_app, render_template, abort, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
-#from json import loads as json_loads
 from socket import gethostname
 from app.api import bp_api
 from app.api.systemd import systemdBus, Journal, IOC_SERVICES_PREFIX, CONSERVER_PREFIX
-#from pam import pam
 from simplepam import authenticate as spam_auth
-
 
 # Authentication
 basic_auth = HTTPBasicAuth()
-
-
-# -----------------------------------------------------------------------------
-# Define auth function
-# -----------------------------------------------------------------------------
-def login(user, password):
-    #users = config.get('DEFAULT', 'users', fallback=None)
-    #if users and not user in users.split(','):
-    #    # User not is in the valid user list
-    #    return False
-    # Validate user with password
-    #return pam().authenticate(user, password)
-    return spam_auth(user, password)
 
 
 # -----------------------------------------------------------------------------
@@ -61,11 +45,13 @@ def get_iocs_list():
         disabled_stop = True if cls == 'active' or cls == 'danger' else False
         disabled_restart = True if cls == 'active' or cls == 'danger' else False
         # title of the service presented in the page
-        service_title = 'generic-service'
+        service_title = 'missing-service'
         if IOC_SERVICES_PREFIX in service[0]:
             service_title = service[0].replace(IOC_SERVICES_PREFIX, '')
+        elif IOC_SERVICES_PREFIX in service[1]:               # when the service is not-found, then second cell is its name...
+            service_title = service[1].replace(IOC_SERVICES_PREFIX, '')
         elif CONSERVER_PREFIX in service[0]:
-            service_title = service[0].replace(CONSERVER_PREFIX, '')
+            service_title = service[0]
         # internal name of the service (UNIT) used when acting over it
         service_name = service[0]
 
@@ -111,6 +97,9 @@ def get_service_action(service, action):
             else:
                 response = jsonify({action: 'not-found', 'status_code':401})
                 return response
+        elif action == 'longstatus':
+            response = jsonify({'longstatus':sdbus.ioc_service_status(service),'status_code':200})
+            return response
         elif action == 'journal':
             return get_service_journal(service, 100)
         else:
@@ -150,24 +139,21 @@ def get_service_journal(service, lines):
 
 def __get_service_journal(service, lines):
     sdbus = systemdBus()
-    ioc_services_list = sdbus.ioc_services_list()
-
-    if service in str(ioc_services_list):
-        if sdbus.get_unit_load_state(service) == 'not-found':
-            response = {'journal': 'not-found'}
-            return response
-        try:
-            lines = int(lines)
-        except Exception as e:
-            response = {'msg': '{}'.format(e)}
-            return response
-        journal = Journal(service)
-        response = {'journal': journal.get_tail(lines)}
+    if sdbus.get_unit_load_state(service) == 'not-found':
+        response = {'journal': 'not-found'}
         return response
-    else:
-        response = {'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)}
+    try:
+        lines = int(lines)
+    except Exception as e:
+        response = {'msg': '{}'.format(e)}
         return response
+    journal = Journal(service)
+    response = {'journal': journal.get_tail(lines)}
+    return response
 
+def __get_service_longstatus(service):
+    sdbus = systemdBus()
+    return sdbus.ioc_service_status(service)
 
 # -----------------------------------------------------------------------------
 # Get default 100 lines journal of a service
@@ -183,6 +169,7 @@ def get_service_journal_page(service):
         if sdbus.get_unit_load_state(service) == 'not-found':
             abort(400,'Sorry, but service \'{}\' unit not found in system.'.format(service))
         journal_lines = __get_service_journal(service, 100)
-        return render_template('journal.tpl', hostname=gethostname(), service=service, journal=journal_lines['journal'])
+        longstatus_lines = __get_service_longstatus(service)
+        return render_template('journal.tpl', hostname=gethostname(), service=service, journal=journal_lines['journal'], longstatus=longstatus_lines)
     else:
         abort(400, 'Sorry, but \'{}\' is not valid anymore.'.format(service))

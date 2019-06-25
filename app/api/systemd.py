@@ -80,7 +80,7 @@ class systemdBus(object):
             return False
 
     def ioc_services_list(self):
-        ioc_services_list   = []
+        iocServicesList   = []
         # ---------------------------------------------------------------------
         # first, we check IOCs
         # ---------------------------------------------------------------------
@@ -92,7 +92,7 @@ class systemdBus(object):
 
             for line in parsed_response:
                 if IOC_SERVICES_PREFIX in line:
-                    ioc_services_list.append(line.split())
+                    iocServicesList.append(line.split())
 
         # ---------------------------------------------------------------------
         # and then, conserver
@@ -105,9 +105,22 @@ class systemdBus(object):
 
             for line in parsed_response:
                 if CONSERVER_PREFIX in line:
-                    ioc_services_list.append(line.split())
+                    iocServicesList.append(line.split())
+        # 
+        return iocServicesList
 
-        return ioc_services_list
+    def ioc_service_status(self, service):
+        iocServiceStatus = []
+        #
+        systemctl_execution = subprocess.Popen([SYSTEMCTL, 'status', service, '-l'], stdout=subprocess.PIPE)
+        response, err       = systemctl_execution.communicate()
+
+        if response:
+            # decode from bytes firsts
+            iocServiceStatus = str(response.decode('utf-8')).split('\\n')
+        # 
+        return iocServiceStatus
+
 
 class Journal(object):
     def __init__(self, unit):
@@ -119,4 +132,5 @@ class Journal(object):
         self.reader.get_previous(lines)
         journal_lines = ['{__REALTIME_TIMESTAMP} {MESSAGE}'.format(**value) for value in self.reader]
         self.reader.close()
+        # 
         return journal_lines

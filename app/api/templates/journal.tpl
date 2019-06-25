@@ -16,10 +16,19 @@
   <body>
     <div class="container-fluid">
       <div class="page-header text-center">
-        <h1>{{service}} journal<br/>
+        <h1>{{service}} status and journal<br/>
         <small>{{hostname or 'iocservicesmonitor'}}</small></h1>
       </div>
       <div>
+        <h3>Status</h3>
+<pre id="longstatus">
+{% for line in longstatus %}
+{{line}}
+{% endfor %}
+</pre>
+      </div>
+      <div>
+        <h3>Journal</h3>
 <pre id="journal">
 {% for line in journal %}
 {{line}}
