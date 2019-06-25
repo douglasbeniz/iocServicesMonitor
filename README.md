@@ -1,6 +1,7 @@
 # iocServicesMonitor
 Utility to monitor systemd services running IOCs as micro-services
-ESS ERIC - ICS HWI group
+
+### ESS ERIC - ICS HWI group
 
 ## Installation
 
@@ -31,4 +32,4 @@ Here it is necessary to configure the service to start the monitor. It could be 
 - iocServicesMonitor = create_app(register_api=True)
 2. edit file ioc@services-monitor.service copied to /etc/systemd/system/; what should be updated:
 - `ConditionHost`;
-- <Server_IP> at `ExecStart`; port 5000 is being used as the default for this tool;
+- <Server_IP> at `ExecStart`; port `5000` is being used as the default for this tool;
