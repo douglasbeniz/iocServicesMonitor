@@ -1,10 +1,12 @@
 from flask import current_app, render_template, abort, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
+#from json import loads as json_loads
 from socket import gethostname
 from app.api import bp_api
 from app.api.systemd import systemdBus, Journal, IOC_SERVICES_PREFIX
 #from pam import pam
 from simplepam import authenticate as spam_auth
+
 
 # Authentication
 basic_auth = HTTPBasicAuth()
@@ -121,7 +123,7 @@ def get_service_journal(service, lines):
     ioc_services_list = sdbus.ioc_services_list()
 
     if service in str(ioc_services_list):
-        if get_service_action(service, 'status')['status'] == 'not-found':
+        if sdbus.get_unit_load_state(service) == 'not-found':
             response = jsonify({'journal': 'not-found', 'status_code':401})
             return response
         try:
@@ -137,6 +139,27 @@ def get_service_journal(service, lines):
         return response
 
 
+def __get_service_journal(service, lines):
+    sdbus = systemdBus()
+    ioc_services_list = sdbus.ioc_services_list()
+
+    if service in str(ioc_services_list):
+        if sdbus.get_unit_load_state(service) == 'not-found':
+            response = {'journal': 'not-found'}
+            return response
+        try:
+            lines = int(lines)
+        except Exception as e:
+            response = {'msg': '{}'.format(e)}
+            return response
+        journal = Journal(service)
+        response = {'journal': journal.get_tail(lines)}
+        return response
+    else:
+        response = {'msg': 'Sorry, but \'{}\' is not valid anymore.'.format(service)}
+        return response
+
+
 # -----------------------------------------------------------------------------
 # Get default 100 lines journal of a service
 # -----------------------------------------------------------------------------
@@ -148,9 +171,9 @@ def get_service_journal_page(service):
     ioc_services_list = sdbus.ioc_services_list()
 
     if service in str(ioc_services_list):
-        if get_service_action(service, 'status')['status'] == 'not-found':
+        if sdbus.get_unit_load_state(service) == 'not-found':
             abort(400,'Sorry, but service \'{}\' unit not found in system.'.format(service))
-        journal_lines = get_service_journal(service, 100)
+        journal_lines = __get_service_journal(service, 100)
         return render_template('journal.tpl', hostname=gethostname(), service=service, journal=journal_lines['journal'])
     else:
         abort(400, 'Sorry, but \'{}\' is not valid anymore.'.format(service))
