@@ -1,3 +1,10 @@
+# -----------------------------------------------------------------------------
+# Utility to monitor systemd services running IOCs as micro-services
+# -----------------------------------------------------------------------------
+# ESS ERIC - ICS HWI group
+# -----------------------------------------------------------------------------
+# author: douglas.bezerra.beniz@esss.se
+# -----------------------------------------------------------------------------
 from flask import current_app, render_template, abort, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from socket import gethostname
@@ -48,7 +55,8 @@ def get_iocs_list():
         service_title = 'missing-service'
         if IOC_SERVICES_PREFIX in service[0]:
             service_title = service[0].replace(IOC_SERVICES_PREFIX, '')
-        elif IOC_SERVICES_PREFIX in service[1]:               # when the service is not-found, then second cell is its name...
+        elif IOC_SERVICES_PREFIX in service[1]:
+            # when the service is not-found, then second cell is its name...
             service_title = service[1].replace(IOC_SERVICES_PREFIX, '')
         elif CONSERVER_PREFIX in service[0]:
             service_title = service[0]

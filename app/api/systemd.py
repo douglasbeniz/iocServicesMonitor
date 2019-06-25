@@ -1,9 +1,10 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-#
-# Distributed under terms of the GNU GPLv3 license.
-
+# -----------------------------------------------------------------------------
+# Utility to monitor systemd services running IOCs as micro-services
+# -----------------------------------------------------------------------------
+# ESS ERIC - ICS HWI group
+# -----------------------------------------------------------------------------
+# author: douglas.bezerra.beniz@esss.se
+# -----------------------------------------------------------------------------
 from dbus import SystemBus, SessionBus, Interface, exceptions
 from systemd import journal
 

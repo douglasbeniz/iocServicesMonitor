@@ -1,14 +1,10 @@
-Click==7.0
 flask==1.0.3
 flask-httpauth==3.3.0
 itsdangerous==1.1.0
 Jinja2==2.10.1
 MarkupSafe==1.1.1
-pkg-resources==0.0.0
 Werkzeug==0.15.4
-#pam==0.1.4
 simplepam==0.1.5
-bottle >= 0.12.10
 # sudo apt-get install libdbus*dev
 dbus-python==1.2.8
 systemd-python==234
