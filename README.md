@@ -19,6 +19,7 @@ sudo su
 mkdir -p /epics/iocs/tools
 cd /epics/iocs/tools/
 git clone https://github.com/douglasbeniz/iocServicesMonitor
+cd iocServicesMonitor
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
